@@ -101,10 +101,12 @@ export class Client {
     return template;
   }
 
-  async reportIssue(): Promise<IncomingWebhookSendArguments | undefined> {
+  async reportIssue(
+    milestoneName: string | undefined,
+  ): Promise<IncomingWebhookSendArguments | undefined> {
     await this.fieldFactory.attachments();
 
-    const parsedIssues = await this.fieldFactory.issues();
+    const parsedIssues = await this.fieldFactory.issues(milestoneName);
     core.setOutput('issues', parsedIssues);
 
     if (!parsedIssues) {
