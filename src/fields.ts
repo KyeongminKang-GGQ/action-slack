@@ -191,7 +191,7 @@ export class FieldFactory {
 
     const result = await this.octokit.rest.issues.listForRepo({ owner, repo });
 
-    console.log(`issues: ${result.status}`);
+    console.log(`issues status: ${result.status}`);
 
     if (result.status === 200) {
       return result.data as unknown as Issue[];

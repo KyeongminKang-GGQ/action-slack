@@ -104,6 +104,7 @@ export class Client {
     await this.fieldFactory.attachments();
 
     const parsedIssues = await this.fieldFactory.issues();
+    console.log(`parsedIssue: ${JSON.stringify(parsedIssues)}`);
 
     if (!parsedIssues) {
       return undefined;
@@ -127,7 +128,7 @@ export class Client {
           },
           {
             "type": "mrkdwn",
-            "text": "<${issue.url}|${issue.title}>"
+            "text": "<${issue.html_url}|${issue.title}>"
           },
           {
             "type": "plain_text",
@@ -174,7 +175,6 @@ export class Client {
     }`;
 
     core.debug(`example: ${result}`);
-    console.debug(`example: ${result}`);
 
     const template: IncomingWebhookSendArguments = JSON.parse(result);
 

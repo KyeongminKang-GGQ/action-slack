@@ -1,6 +1,6 @@
 export interface Issue {
   title: string;
-  url: string;
+  html_url: string;
   state: string;
   assignee?: {
     login: string;
