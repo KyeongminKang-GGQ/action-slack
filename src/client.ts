@@ -107,16 +107,20 @@ export class Client {
     const parsedIssues: Issue[] = JSON.parse(issues);
     let milestone = '';
     let sections = '';
+    const repo = process.env.AS_REPO?.replace('<', '')?.replace('>', '');
 
-    for (const issue of parsedIssues) {
+    for (const [index, issue] of parsedIssues.entries()) {
       milestone = issue.milestone?.title ? `[${issue.milestone?.title}]` : '';
       sections += `{
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "- <${process.env.AS_REPO}/issues/${issue.number}|${issue.title}> ${milestone}"
+          "text": "- <${repo}/issues/${issue.number}|${issue.title}> ${milestone}"
         }
       }`;
+      if (index + 1 < parsedIssues.length) {
+        sections += ',';
+      }
     }
 
     const result = `{
@@ -133,6 +137,7 @@ export class Client {
     }`;
 
     core.debug(`example: ${result}`);
+    console.debug(`example: ${result}`);
 
     const template: IncomingWebhookSendArguments = JSON.parse(result);
 
