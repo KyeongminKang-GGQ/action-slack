@@ -190,7 +190,7 @@ export class Client {
           "elements": [
             {
               "type": "mrkdwn",
-              "text": "Repository: ${process.env.AS_REPO}"
+              "text": "Repository: ${process.env.AS_REPO}\nWorkflow: ${process.env.AS_WORKFLOW}"
             }
           ]
         },
