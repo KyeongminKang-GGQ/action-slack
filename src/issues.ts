@@ -2,7 +2,10 @@ export interface Issue {
   title: string;
   url: string;
   state: string;
-  milestone: {
+  assignee?: {
+    login: string;
+  };
+  milestone?: {
     title: string;
     url: string;
   };

@@ -100,10 +100,14 @@ export class Client {
     return template;
   }
 
-  async reportIssue() {
+  async reportIssue(): Promise<IncomingWebhookSendArguments | undefined> {
     await this.fieldFactory.attachments();
 
     const parsedIssues = await this.fieldFactory.issues();
+
+    if (!parsedIssues) {
+      return undefined;
+    }
 
     let milestone = '';
     let sections = '';
@@ -112,11 +116,45 @@ export class Client {
       milestone = issue.milestone?.title ? `[${issue.milestone?.title}]` : '';
       sections += `{
         "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": "- <${issue.url}|${issue.title}> ${milestone}"
-        }
-      }`;
+        "fields": [
+          {
+            "type": "mrkdwn",
+            "text": "*Issue*"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Assignee*"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "<${issue.url}|${issue.title}>"
+          },
+          {
+            "type": "plain_text",
+            "text": "${issue.assignee?.login}"
+          }, 
+          {
+            "type": "mrkdwn",
+            "text": "*CreatedAt*"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Milestone*"
+          },
+          {
+            "type": "plain_text",
+            "text": "${issue.created_at}"
+          }, 
+          {
+            "type": "plain_text",
+            "text": "${issue.milestone?.title}"
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      }
+      `;
       if (index + 1 < parsedIssues.length) {
         sections += ',';
       }
