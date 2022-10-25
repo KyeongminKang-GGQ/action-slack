@@ -9,6 +9,8 @@ import {
 import { FieldFactory } from './fields';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
+export const ReportIssue = 'report-issue';
+type ReportIssueType = 'report-issue';
 export const Success = 'success';
 type SuccessType = 'success';
 export const Failure = 'failure';
@@ -96,6 +98,11 @@ export class Client {
     /* eslint-disable no-var */
     var template: IncomingWebhookSendArguments = eval(`template = ${payload}`);
     /* eslint-enable */
+    return template;
+  }
+
+  async reportIssue(issues: string) {
+    var template: IncomingWebhookSendArguments = eval(`template = ${issues}`);
     return template;
   }
 
