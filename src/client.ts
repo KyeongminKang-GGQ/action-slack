@@ -163,12 +163,13 @@ export class Client {
               "text": "${issue.milestone?.title ?? ''}"
             }
           ]
-        },
-        {
-          "type": "divider"
         }`;
       if (index + 1 < parsedIssues.length) {
-        sections += ',';
+        sections += `,
+        {
+          "type": "divider"
+        },
+        `;
       }
     }
 
@@ -189,7 +190,6 @@ export class Client {
     console.log(`result: ${result}`);
 
     const template: IncomingWebhookSendArguments = JSON.parse(result);
-    console.log(`template: ${template}`);
 
     return template;
   }
@@ -201,9 +201,16 @@ export class Client {
     return template;
   }
 
-  async send(payload: string | IncomingWebhookSendArguments) {
+  async send(payload: string | IncomingWebhookSendArguments | undefined) {
+    if (!payload) {
+      console.warn('cannot send payload is empty');
+      return;
+    }
     core.debug(JSON.stringify(context, null, 2));
+    core.debug('send');
+    core.debug(JSON.stringify(payload));
     await this.webhook.send(payload);
+    console.log('send message');
     core.debug('send message');
   }
 

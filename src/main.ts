@@ -61,10 +61,7 @@ async function run(): Promise<void> {
 
     switch (status) {
       case ReportIssue:
-        const issues = await client.reportIssue();
-        if (issues) {
-          await client.send(issues);
-        }
+        await client.send(await client.reportIssue());
         break;
       case Success:
       case Failure:
