@@ -104,11 +104,11 @@ export class Client {
 
   async reportIssue(issues: string) {
     const parsedIssues: Issue[] = JSON.parse(issues);
-    var sections = '';
     var milestone = '';
+    var sections = '';
 
     parsedIssues.forEach(issue => {
-      milestone = issue.milestone ? `[${issue.milestone}]` : '';
+      milestone = issue.milestone?.title ? `[${issue.milestone?.title}]` : '';
       sections += `{
         "type": "section",
         "text": {
@@ -118,22 +118,22 @@ export class Client {
       }`;
     });
 
-    const example = {
-      blocks: [
+    var result = `{
+      "blocks": [
         {
-          type: 'header',
-          text: {
-            type: 'plain_text',
-            text: ':warning: Please check remain issues.',
-          },
+          "type": "header",
+          "text": {
+            "type": "plain_text",
+            "text": ":warning: Please check remain issues."
+          }
         },
-        sections,
-      ],
-    };
+        ${sections}
+      ]
+    }`;
 
-    core.debug(`example: ${example}`);
+    core.debug(`example: ${result}`);
 
-    return example;
+    return result;
   }
 
   async prepare(text: string) {
