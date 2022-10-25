@@ -19,6 +19,7 @@ type CancelledType = 'cancelled';
 export const Custom = 'custom';
 export const Always = 'always';
 type AlwaysType = 'always';
+const offset = 1000 * 60 * 60 * 9;
 
 export type Octokit = InstanceType<typeof GitHub>;
 
@@ -104,7 +105,6 @@ export class Client {
     await this.fieldFactory.attachments();
 
     const parsedIssues = await this.fieldFactory.issues();
-    console.log(`parsedIssue: ${JSON.stringify(parsedIssues)}`);
 
     if (!parsedIssues) {
       return undefined;
@@ -115,6 +115,18 @@ export class Client {
 
     for (const [index, issue] of parsedIssues.entries()) {
       milestone = issue.milestone?.title ? `[${issue.milestone?.title}]` : '';
+      const new_date = new Date(new Date(issue.created_at).getTime() + offset);
+      const dateFormat =
+        new_date.getFullYear() +
+        '년 ' +
+        (new_date.getMonth() + 1) +
+        '월 ' +
+        new_date.getDate() +
+        '일 ' +
+        new_date.getHours() +
+        '시 ' +
+        new_date.getMinutes() +
+        '분 ';
       sections += `{
         "type": "section",
         "fields": [
@@ -132,7 +144,7 @@ export class Client {
           },
           {
             "type": "plain_text",
-            "text": "${issue.assignee?.login}"
+            "text": "${issue.assignee?.login ?? ''}"
           }, 
           {
             "type": "mrkdwn",
@@ -144,11 +156,11 @@ export class Client {
           },
           {
             "type": "plain_text",
-            "text": "${issue.created_at}"
+            "text": "${dateFormat}"
           }, 
           {
             "type": "plain_text",
-            "text": "${issue.milestone?.title}"
+            "text": "${issue.milestone?.title ?? ''}"
           }
         ]
       },
@@ -175,6 +187,7 @@ export class Client {
     }`;
 
     core.debug(`example: ${result}`);
+    console.log(`result: ${result}`);
 
     const template: IncomingWebhookSendArguments = JSON.parse(result);
 
