@@ -126,48 +126,47 @@ export class Client {
         new_date.getHours() +
         '시 ' +
         new_date.getMinutes() +
-        '분 ';
+        '분';
       sections += `{
-        "type": "section",
-        "fields": [
-          {
-            "type": "mrkdwn",
-            "text": "*Issue*"
-          },
-          {
-            "type": "mrkdwn",
-            "text": "*Assignee*"
-          },
-          {
-            "type": "mrkdwn",
-            "text": "<${issue.html_url}|${issue.title}>"
-          },
-          {
-            "type": "plain_text",
-            "text": "${issue.assignee?.login ?? ''}"
-          }, 
-          {
-            "type": "mrkdwn",
-            "text": "*CreatedAt*"
-          },
-          {
-            "type": "mrkdwn",
-            "text": "*Milestone*"
-          },
-          {
-            "type": "plain_text",
-            "text": "${dateFormat}"
-          }, 
-          {
-            "type": "plain_text",
-            "text": "${issue.milestone?.title ?? ''}"
-          }
-        ]
-      },
-      {
-        "type": "divider"
-      }
-      `;
+          "type": "section",
+          "fields": [
+            {
+              "type": "mrkdwn",
+              "text": "*Issue*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Assignee*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "<${issue.html_url}|${issue.title}>"
+            },
+            {
+              "type": "plain_text",
+              "text": "${issue.assignee?.login ?? ''}"
+            }, 
+            {
+              "type": "mrkdwn",
+              "text": "*CreatedAt*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Milestone*"
+            },
+            {
+              "type": "plain_text",
+              "text": "${dateFormat}"
+            }, 
+            {
+              "type": "plain_text",
+              "text": "${issue.milestone?.title ?? ''}"
+            }
+          ]
+        },
+        {
+          "type": "divider"
+        }`;
       if (index + 1 < parsedIssues.length) {
         sections += ',';
       }
@@ -190,6 +189,7 @@ export class Client {
     console.log(`result: ${result}`);
 
     const template: IncomingWebhookSendArguments = JSON.parse(result);
+    console.log(`template: ${template}`);
 
     return template;
   }
