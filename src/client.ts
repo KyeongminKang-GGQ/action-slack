@@ -109,7 +109,7 @@ export class Client {
     const parsedIssues = await this.fieldFactory.issues(milestoneName);
     core.setOutput('issues', parsedIssues);
 
-    if (!parsedIssues) {
+    if (!parsedIssues || parsedIssues.length == 0) {
       return undefined;
     }
 
