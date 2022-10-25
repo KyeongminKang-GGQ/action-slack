@@ -63,7 +63,9 @@ async function run(): Promise<void> {
 
     switch (status) {
       case ReportIssue:
-        await client.send(await client.reportIssue(issues));
+        if (issues) {
+          await client.send(await client.reportIssue(issues));
+        }
         break;
       case Success:
       case Failure:
