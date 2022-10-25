@@ -11,7 +11,6 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 import { Issue } from './issues';
 
 export const ReportIssue = 'report-issue';
-type ReportIssueType = 'report-issue';
 export const Success = 'success';
 type SuccessType = 'success';
 export const Failure = 'failure';
@@ -104,10 +103,10 @@ export class Client {
 
   async reportIssue(issues: string) {
     const parsedIssues: Issue[] = JSON.parse(issues);
-    var milestone = '';
-    var sections = '';
+    let milestone = '';
+    let sections = '';
 
-    parsedIssues.forEach(issue => {
+    for (const issue of parsedIssues) {
       milestone = issue.milestone?.title ? `[${issue.milestone?.title}]` : '';
       sections += `{
         "type": "section",
@@ -116,9 +115,9 @@ export class Client {
           "text": "- <${process.env.AS_REPO}/issues/${issue.number}|${issue.title}> ${milestone}"
         }
       }`;
-    });
+    }
 
-    var result = `{
+    const result = `{
       "blocks": [
         {
           "type": "header",
