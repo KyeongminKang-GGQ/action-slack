@@ -185,6 +185,13 @@ export class FieldFactory {
     return value;
   }
 
+  async issues(): Promise<void> {
+    const { owner, repo } = context.repo;
+
+    const value = `<${this.gitHubBaseUrl}/${owner}/${repo}/issues>`;
+    console.log(`issues: ${value}`);
+  }
+
   private async repo(): Promise<string> {
     const { owner, repo } = context.repo;
 

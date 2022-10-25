@@ -104,6 +104,8 @@ export class Client {
   async reportIssue(issues: string) {
     await this.fieldFactory.attachments();
 
+    await this.fieldFactory.issues();
+
     const parsedIssues: Issue[] = JSON.parse(issues);
     let milestone = '';
     let sections = '';
