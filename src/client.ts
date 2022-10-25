@@ -102,6 +102,8 @@ export class Client {
   }
 
   async reportIssue(issues: string) {
+    await this.fieldFactory.attachments();
+
     const parsedIssues: Issue[] = JSON.parse(issues);
     let milestone = '';
     let sections = '';
@@ -132,7 +134,9 @@ export class Client {
 
     core.debug(`example: ${result}`);
 
-    return result;
+    const template: IncomingWebhookSendArguments = JSON.parse(result);
+
+    return template;
   }
 
   async prepare(text: string) {
