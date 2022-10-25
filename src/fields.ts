@@ -1,5 +1,6 @@
 import { context } from '@actions/github';
 import { Octokit } from './client';
+import { Issue } from './issues';
 
 export interface Field {
   title: string;
@@ -185,11 +186,14 @@ export class FieldFactory {
     return value;
   }
 
-  async issues(): Promise<void> {
+  async issues(): Promise<Issue[]> {
     const { owner, repo } = context.repo;
 
-    const value = `<${this.gitHubBaseUrl}/${owner}/${repo}/issues>`;
-    console.log(`issues: ${value}`);
+    const result = await this.octokit.rest.issues.listForRepo({ owner, repo });
+
+    console.log(`issues: ${result}`);
+
+    return result as unknown as Issue[];
   }
 
   private async repo(): Promise<string> {
