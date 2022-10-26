@@ -1,5 +1,6 @@
 export interface Issue {
   title: string;
+  node_id: string;
   html_url: string;
   state: string;
   assignee?: {

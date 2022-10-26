@@ -202,9 +202,13 @@ export class FieldFactory {
     if (result.status === 200) {
       const issues = result.data as unknown as Issue[];
       if (milestoneName) {
-        return issues.filter(issue => issue.milestone?.title === milestoneName);
+        return issues.filter(
+          issue =>
+            issue.milestone?.title === milestoneName &&
+            issue.node_id.startsWith('I_'),
+        );
       }
-      return issues;
+      return issues.filter(issue => issue.node_id.startsWith('I_'));
     }
 
     return undefined;
