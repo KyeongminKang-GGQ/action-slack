@@ -163,10 +163,12 @@ export class Client {
       }
     }
 
-    const emoji = process.env.AS_WORKFLOW?.toLowerCase().startsWith('settag')
+    console.log(`workflow: `, context.workflow);
+
+    const emoji = context.workflow?.toLowerCase().startsWith('settag')
       ? ':no_entry:'
       : ':warning:';
-    const color = process.env.AS_WORKFLOW?.toLowerCase().startsWith('settag')
+    const color = context.workflow?.toLowerCase().startsWith('settag')
       ? 'danger'
       : 'warning';
     const issueLink = await this.fieldFactory.issueLink();
