@@ -1,6 +1,7 @@
 import { context } from '@actions/github';
 import { Octokit } from './client';
 import { Issue } from './issues';
+import { Milestone } from './milestones';
 
 export interface Field {
   title: string;
@@ -184,6 +185,29 @@ export class FieldFactory {
     }/${owner}/${repo}/commit/${sha}|${sha.slice(0, 8)}>`;
     process.env.AS_COMMIT = value;
     return value;
+  }
+
+  async milestone(milestoneName: string): Promise<Milestone | undefined> {
+    const { owner, repo } = context.repo;
+
+    const result = await this.octokit.rest.issues.listMilestones({
+      owner,
+      repo,
+      state: 'open',
+    });
+
+    console.log(`milestone status: ${result.status}`);
+
+    if (result.status === 200) {
+      const milestones: Milestone[] = result.data.filter(
+        (milestone: Milestone) => milestone.title === milestoneName,
+      );
+      if (milestones && milestones.length > 0) {
+        return milestones[0];
+      }
+    }
+
+    return undefined;
   }
 
   async issues(

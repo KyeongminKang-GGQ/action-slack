@@ -109,45 +109,8 @@ export class Client {
     const parsedIssues = await this.fieldFactory.issues(milestoneName);
     core.setOutput('issues', parsedIssues);
 
-    if (!parsedIssues || parsedIssues.length == 0) {
+    if (!parsedIssues || parsedIssues.length === 0) {
       return undefined;
-    }
-
-    let milestone = '';
-    let fields = '';
-
-    for (const [index, issue] of parsedIssues.entries()) {
-      milestone = issue.milestone?.title ? `[${issue.milestone?.title}]` : '';
-      const new_date = new Date(new Date(issue.created_at).getTime() + offset);
-      const dateFormat = `${new_date.getFullYear()}년 ${
-        new_date.getMonth() + 1
-      }월 ${new_date.getDate()}일 ${new_date.getHours()}시 ${new_date.getMinutes()}분`;
-
-      fields += `
-      {
-        "title": "Issue",
-        "value": "<${issue.html_url}|${issue.title}>",
-        "short": false
-      },
-      {
-        "title": "CreatedAt",
-        "value": "${dateFormat}",
-        "short": true
-      }`;
-
-      if (!milestoneName) {
-        fields += `,
-        {
-          "title": "Milestone",
-          "value": "${issue.milestone?.title ?? 'None'}",
-          "short": true
-        }
-        `;
-      }
-
-      if (index + 1 < parsedIssues.length) {
-        fields += `,`;
-      }
     }
 
     console.log(`workflow: `, context.workflow);
@@ -155,10 +118,15 @@ export class Client {
     const emoji = context.workflow?.toLowerCase().startsWith('settag')
       ? ':no_entry:'
       : ':warning:';
-    const color = context.workflow?.toLowerCase().startsWith('settag')
-      ? 'danger'
-      : 'warning';
-    const issueLink = await this.fieldFactory.issueLink();
+    let link = '';
+    if (milestoneName) {
+      const milestone = await this.fieldFactory.milestone(milestoneName);
+      link = `<${milestone?.html_url}|Total ${milestone?.open_issues}>`;
+    } else {
+      link = `<${await this.fieldFactory.issueLink()}|Total ${
+        parsedIssues.length
+      }>`;
+    }
     const milestoneInput = milestoneName
       ? `\\n *Milestone*: ${milestoneName}`
       : '';
@@ -176,22 +144,22 @@ export class Client {
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "*Workflow*: ${process.env.AS_WORKFLOW}\\n*Open issue*: <${issueLink}|Total ${parsedIssues.length}>${milestoneInput}\\n\\n*Please check issues:*"
+            "text": "*Workflow*: ${process.env.AS_WORKFLOW}\\n*Open issue*: ${link}${milestoneInput}"
           }
         },
         {
-          "type": "divider"
-        }
-      ],
-      "attachments": [
-        {
-          "mrkdwn_in": ["text"],
-          "color": "${color}",
-          "fields": [
-            ${fields}
-          ],
-          "footer": "@${process.env.AS_REF}",
-          "footer_icon": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+          "type": "context",
+          "elements": [
+            {
+              "type": "image",
+              "image_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+              "alt_text": "github action"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "@${process.env.AS_REF}"
+            }
+          ]
         }
       ]
     }`;
